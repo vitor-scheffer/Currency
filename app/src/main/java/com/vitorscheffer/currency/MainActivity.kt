@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.EditText
+import android.widget.RadioGroup
 import android.widget.TextView
 
 class MainActivity : AppCompatActivity() {
@@ -18,9 +20,28 @@ class MainActivity : AppCompatActivity() {
         result = findViewById<TextView>(R.id.txt_result)
 
         btnConverter.setOnClickListener {
-            result.visibility = View.VISIBLE
-            result.text = "Novo Texto"
+            converter()
+        }
+    }
+
+    private fun converter() {
+        val selectedCurrency = findViewById<RadioGroup>(R.id.radioGroup)
+
+        val checked = selectedCurrency.checkedRadioButtonId
+
+        val currency = when(checked) {
+            R.id.radio_usd -> "USD"
+            R.id.radio_eur -> "EUR"
+            else           -> "CLP"
         }
 
+        val editField = findViewById<EditText>(R.id.edit_field)
+
+        val value = editField.text
+
+        if (value.isEmpty()) return
+
+        result.visibility = View.VISIBLE
+        result.text = currency + value
     }
 }
