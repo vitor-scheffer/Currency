@@ -15,6 +15,7 @@ class MainActivity : AppCompatActivity() {
 
     private val apiKey = "vz3Ot94LMiJTQdK8CpyISQGy7oGfk8Rh"
     private lateinit var result: TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -60,7 +61,7 @@ class MainActivity : AppCompatActivity() {
                     val res = obj.getDouble("result")
 
                     result.visibility = View.VISIBLE
-                    result.text = "${res}"
+                    result.text = "R$ ${String.format("%.2f", res)}"
                 }
             } finally {
                 conn.disconnect()
