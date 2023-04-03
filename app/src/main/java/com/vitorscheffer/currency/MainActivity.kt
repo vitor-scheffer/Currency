@@ -7,9 +7,13 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.RadioGroup
 import android.widget.TextView
+import org.json.JSONObject
+import java.net.URL
+import javax.net.ssl.HttpsURLConnection
 
 class MainActivity : AppCompatActivity() {
 
+    private val apiKey = "vz3Ot94LMiJTQdK8CpyISQGy7oGfk8Rh"
     private lateinit var result: TextView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,8 +29,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun converter() {
-        val selectedCurrency = findViewById<RadioGroup>(R.id.radioGroup)
 
+        val selectedCurrency = findViewById<RadioGroup>(R.id.radioGroup)
         val checked = selectedCurrency.checkedRadioButtonId
 
         val currency = when(checked) {
@@ -41,7 +45,28 @@ class MainActivity : AppCompatActivity() {
 
         if (value.isEmpty()) return
 
-        result.visibility = View.VISIBLE
-        result.text = currency + value
+        Thread {
+            val url = URL("https://api.apilayer.com/exchangerates_data/convert?to=${currency}&from=BRL&amount=${value}")
+            val conn = url.openConnection() as HttpsURLConnection
+
+            conn.requestMethod = "GET"
+            conn.setRequestProperty("apikey", apiKey)
+
+            try {
+                val data = conn.inputStream.bufferedReader().readText()
+                val obj = JSONObject(data)
+
+                runOnUiThread {
+                    val res = obj.getDouble("result")
+
+                    result.visibility = View.VISIBLE
+                    result.text = "${res}"
+                }
+            } finally {
+                conn.disconnect()
+            }
+
+        }.start()
     }
+
 }
