@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.RadioGroup
 import android.widget.TextView
 import org.json.JSONObject
@@ -33,6 +35,8 @@ class MainActivity : AppCompatActivity() {
 
         val selectedCurrency = findViewById<RadioGroup>(R.id.radioGroup)
         val checked = selectedCurrency.checkedRadioButtonId
+        val loading = findViewById<ProgressBar>(R.id.loading_progress)
+        val stackView = findViewById<LinearLayout>(R.id.stack_view)
 
         val currency = when(checked) {
             R.id.radio_usd -> "USD"
@@ -45,6 +49,10 @@ class MainActivity : AppCompatActivity() {
         val value = editField.text
 
         if (value.isEmpty()) return
+
+        stackView.visibility = View.VISIBLE
+        loading.visibility = View.VISIBLE
+        result.visibility = View.GONE
 
         Thread {
             val url = URL("https://api.apilayer.com/exchangerates_data/convert?to=${currency}&from=BRL&amount=${value}")
@@ -60,6 +68,7 @@ class MainActivity : AppCompatActivity() {
                 runOnUiThread {
                     val res = obj.getDouble("result")
 
+                    loading.visibility = View.GONE
                     result.visibility = View.VISIBLE
                     result.text = "R$ ${String.format("%.2f", res)}"
                 }
