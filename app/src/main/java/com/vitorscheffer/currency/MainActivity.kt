@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity() {
 
                     loading.visibility = View.GONE
                     result.visibility = View.VISIBLE
-                    result.text = "R$ ${String.format("%.2f", res)}"
+                    result.text = "$ ${String.format("%.2f", res)}"
                 }
             } finally {
                 conn.disconnect()
